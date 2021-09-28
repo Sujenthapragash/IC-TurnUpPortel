@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Threading;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 
-namespace IC_TurnUpPortal_TestAutomation
+namespace IC_TurnUpPortal_TestAutomation.Pages
 {
-    class Program
+    public class LoginPage
     {
-        static void Main(string[] args)
+        public LoginPage()
         {
-
-            //open chrome browser
-            IWebDriver driver = new ChromeDriver();
-
-            // launch turnup portal and maximize window
+        }
+        public void Login(IWebDriver driver)
+        {
             driver.Navigate().GoToUrl("http://horse.industryconnect.io/Account/Login?ReturnUrl=%2f");
             driver.Manage().Window.Maximize();
             Thread.Sleep(2000);
@@ -42,26 +39,6 @@ namespace IC_TurnUpPortal_TestAutomation
             {
                 Console.WriteLine("User login failed, Test failed");
             }
-
-            // Click on administration dropdown
-
-            // select time & Material from dropdown list
-
-            // click on create new button
-
-            // Select time from typeCode dropdown
-
-            // identify "Code" textbox and input code
-
-            // identify "Description" textbox and input description
-
-            // identify "Price" textbox and input price
-
-            // Click on "Save" button
-
-            // Click on last Pagge
-
-            // Assert new time entry in last line
         }
     }
 }

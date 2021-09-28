@@ -11,11 +11,19 @@
     <None Remove="Selenium.WebDriver" />
     <None Remove="Selenium.Support" />
     <None Remove="Selenium.WebDriver.ChromeDriver" />
+    <None Remove="Pages\" />
+    <None Remove="Tests\" />
+    <None Remove="Utilities\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="93.0.4577.6300" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\" />
+    <Folder Include="Tests\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>
