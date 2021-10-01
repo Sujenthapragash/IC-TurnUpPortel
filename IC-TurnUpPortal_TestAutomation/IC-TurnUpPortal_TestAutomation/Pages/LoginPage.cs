@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Threading;
+using IC_TurnUpPortal_TestAutomation.Utilities;
+using NUnit.Framework;
 using OpenQA.Selenium;
 
 namespace IC_TurnUpPortal_TestAutomation.Pages
@@ -9,11 +10,13 @@ namespace IC_TurnUpPortal_TestAutomation.Pages
         public LoginPage()
         {
         }
+
         public void Login(IWebDriver driver)
         {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
             driver.Navigate().GoToUrl("http://horse.industryconnect.io/Account/Login?ReturnUrl=%2f");
             driver.Manage().Window.Maximize();
-            Thread.Sleep(2000);
 
             //identify username textbox and enter valid username "hari"
             IWebElement usernameField = driver.FindElement(By.Id("UserName"));
@@ -28,17 +31,10 @@ namespace IC_TurnUpPortal_TestAutomation.Pages
             loginButton.Click();
 
             //check if user login suceesfully
-
             IWebElement helloUser = driver.FindElement(By.XPath("//*[@id='logoutForm']/ul/li/a"));
 
-            if (helloUser.Text == "Hello hari!")
-            {
-                Console.WriteLine("User logged in successfully, Test Passed");
-            }
-            else
-            {
-                Console.WriteLine("User login failed, Test failed");
-            }
+
+            Assert.That(helloUser.Text == "Hello hari!"," User has not logged in successfully");
         }
     }
 }

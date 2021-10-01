@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading;
+using IC_TurnUpPortal_TestAutomation.Utilities;
+using NUnit.Framework;
 using OpenQA.Selenium;
 
 namespace IC_TurnUpPortal_TestAutomation.Pages
@@ -11,18 +13,21 @@ namespace IC_TurnUpPortal_TestAutomation.Pages
         }
         public void CreateTM(IWebDriver driver)
         {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+
             // click on create new button
             IWebElement createNewButton = driver.FindElement(By.XPath("//*[@id='container']/p/a"));
             createNewButton.Click();
-            Thread.Sleep(2000);
 
             // Click on TypeCode dropdown
             IWebElement typeCodeDropDown = driver.FindElement(By.XPath("//*[@id='TimeMaterialEditForm']/div/div[1]/div/span[1]/span/span[1]"));
+            Wait.WaitForElementToBeClickable(driver,typeCodeDropDown, 5);
             typeCodeDropDown.Click();
-            Thread.Sleep(2000);
 
             // Select time from typeCode dropdown
             IWebElement timeOption = driver.FindElement(By.XPath("//*[@id='TypeCode_listbox']/li[2]"));
+            Wait.WaitForElementToBeClickable(driver, timeOption, 5);
             timeOption.Click();
 
             // identify "Code" textbox and input code
@@ -36,7 +41,7 @@ namespace IC_TurnUpPortal_TestAutomation.Pages
             descriptionTextbox.SendKeys(newDescription);
 
             // identify "Price" textbox and input price
-            var newPrice = "120";
+            var newPrice = "120.00";
             driver.FindElement(By.XPath("//*[@id='TimeMaterialEditForm']/div/div[4]/div/span[1]/span/input[1]")).Click();
             IWebElement priceTextbox = driver.FindElement(By.Id("Price"));
             priceTextbox.SendKeys(newPrice);
@@ -44,37 +49,36 @@ namespace IC_TurnUpPortal_TestAutomation.Pages
             // Click on "Save" button
             IWebElement saveButton = driver.FindElement(By.Id("SaveButton"));
             saveButton.Click();
-            Thread.Sleep(2000);
 
             // Click on last Pagge
-            IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]/span"));
-            goToLastPageButton.Click();
             Thread.Sleep(2000);
+            IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]"));
+            //Wait.WaitForElementToBeClickable(driver, goToLastPageButton, 5);
+            goToLastPageButton.Click();
 
             // Assert new time entry in last line
+
             IWebElement lastEntryCode = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]"));
             IWebElement lastEnrtyDescription = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
             IWebElement lastEntryPrice = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
 
-            if (lastEntryCode.Text == newCode && lastEnrtyDescription.Text == newDescription && lastEntryPrice.Text == "$" + newPrice + ".00")
-            {
-                Console.WriteLine("Your new entry has been succesfully added , TEST PASSED!");
-            }
-            else
-            {
-                Console.WriteLine("Your new enty has not been added successfully, TEST FAILED!");
-            }
+
+            Assert.That(lastEntryCode.Text == newCode, "Codes does not match with with as entered");
+            Assert.That(lastEnrtyDescription.Text == newDescription, "Description does not match with as entered");
+            Assert.That(lastEntryPrice.Text == ("$" + newPrice), "Price does not match with as entered");
+
         }
 
         public void EditTM(IWebDriver driver)
         {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3000);
+
             //Edit the Time and Material that has been created previously
             // Ammend the price to $150.00
-            var ammendedPrice = "150";
+            var ammendedPrice = "150.00";
             // Identify and click edit button
             IWebElement editButton = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
             editButton.Click();
-            Thread.Sleep(2000);
 
             // Identify price text box and clear the text box
             driver.FindElement(By.XPath("//*[@id='TimeMaterialEditForm']/div/div[4]/div/span[1]/span/input[1]")).Click();
@@ -96,55 +100,53 @@ namespace IC_TurnUpPortal_TestAutomation.Pages
             // Idendify save button and click
             IWebElement editSaveButton = driver.FindElement(By.Id("SaveButton"));
             editSaveButton.Click();
-            Thread.Sleep(2000);
 
             // Click on last Pagge
             var goToLastPageButton = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]/span"));
             goToLastPageButton.Click();
-            Thread.Sleep(2000);
 
             // Assert ammented time entry in last line
             var lastEnrtyDescription = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[3]"));
             var lastEntryPrice = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[4]"));
 
-
-            if (lastEnrtyDescription.Text == ammendedDescription && lastEntryPrice.Text == "$" + ammendedPrice + ".00")
-            {
-                Console.WriteLine("Entry has been succesfully ammended , TEST PASSED!");
-            }
-            else
-            {
-                Console.WriteLine("Enty has not been ammended successfully, TEST FAILED!");
-            }
+            Assert.That(lastEnrtyDescription.Text == ammendedDescription," Description has not been mathed with as edited");
+            Assert.That(lastEntryPrice.Text == "$" + ammendedPrice,"Price has not been mathed with as edited");
 
         }
 
         public void DeleteTM(IWebDriver driver)
         {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+            // Click on last Pagge
+            Thread.Sleep(2000);
+            IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]"));
+            //Wait.WaitForElementToBeClickable(driver, goToLastPageButton, 5);
+            goToLastPageButton.Click();
+
             //Delete time and Material that has been created previously
             var tableRaws = driver.FindElements(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr"));
+            Console.WriteLine(tableRaws.Count);
             var dataIdBeforeDelete = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]")).GetAttribute("data-uid");
 
             //Identify and click delete button
             IWebElement deleteButton = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
             deleteButton.Click();
-            Thread.Sleep(2000);
 
             // Click ok in alert window
+            Wait.WaitForAlertToPresent(driver,5);
             IAlert deleteAlert = driver.SwitchTo().Alert();
             deleteAlert.Accept();
-            Thread.Sleep(2000);
+
             // assert last entry has been deleted
+            Wait.WaitForGetNumberOfWebElements(driver, 5, By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr"), tableRaws.Count - 1);
             var tableRawsAfterDelete = driver.FindElements(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr"));
             var dataIdAfterDelete = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]")).GetAttribute("data-uid");
-            if (tableRawsAfterDelete.Count == (tableRaws.Count - 1) && dataIdAfterDelete != dataIdBeforeDelete)
-            {
-                Console.WriteLine("Your last entery has been deleted, TEST PASSED!");
-            }
-            else
-            {
-                Console.WriteLine("You last entery has not been deleted, TEST FAILED!");
-            }
+
+            Console.WriteLine(tableRawsAfterDelete.Count);
+
+            Assert.That(tableRawsAfterDelete.Count == (tableRaws.Count - 1)," Table cound is not reduced");
+            Assert.That(dataIdAfterDelete != dataIdBeforeDelete,"Deleted dataID is still avialable");
         }
     }
 }
